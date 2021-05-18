@@ -8,6 +8,7 @@
 #include "adm/elements/audio_content.hpp"
 #include "adm/elements/audio_programme_id.hpp"
 #include "adm/elements/audio_programme_ref_screen.hpp"
+#include "adm/elements/label.hpp"
 #include "adm/elements/loudness_metadata.hpp"
 #include "adm/elements_fwd.hpp"
 #include "adm/helper/element_range.hpp"
@@ -30,6 +31,7 @@ namespace adm {
   /// @brief NamedType for the language attribute of the audioProgramme element
   using AudioProgrammeLanguage =
       detail::NamedType<std::string, AudioProgrammeLanguageTag>;
+
   /// @brief Tag for NamedType ::MaxDuckingDepth
   struct MaxDuckingDepthTag {};
   /**
@@ -170,6 +172,34 @@ namespace adm {
     void clearReferences();
 
     /**
+     * @brief Add AudioProgrammeLabel
+     */
+    ADM_EXPORT void add(AudioProgrammeLabel label);
+
+    /**
+     * @brief ElementType elements getter template
+     *
+     * Templated getter with the wanted ElementType type as template
+     * argument.
+     */
+    template <typename ElementType>
+    LabelConstRange<ElementType> getElements() const;
+
+    /**
+     * @brief ElementType elements getter template
+     *
+     * Templated getter with the wanted ElementType type as template
+     * argument.
+     */
+    template <typename ElementType>
+    LabelRange<ElementType> getElements();
+
+    /**
+     * @brief remove all AudioProgrammeLabel instances
+     */
+    ADM_EXPORT void clearAudioProgrammeLabels();
+
+    /**
      * @brief Print overview to ostream
      */
     void print(std::ostream &os) const;
@@ -235,6 +265,13 @@ namespace adm {
 
     ADM_EXPORT void disconnectReferences();
 
+    ADM_EXPORT
+    LabelConstRange<AudioProgrammeLabel> get(
+        detail::ParameterTraits<AudioProgrammeLabel>::tag) const;
+    ADM_EXPORT
+    LabelRange<AudioProgrammeLabel> get(
+        detail::ParameterTraits<AudioProgrammeLabel>::tag);
+
     void setParent(std::weak_ptr<Document> document);
 
     std::weak_ptr<Document> parent_;
@@ -244,6 +281,7 @@ namespace adm {
     boost::optional<Start> start_;
     boost::optional<End> end_;
     std::vector<std::shared_ptr<AudioContent>> audioContents_;
+    std::vector<AudioProgrammeLabel> audioProgrammeLabels_;
     boost::optional<LoudnessMetadata> loudnessMetadata_;
     boost::optional<MaxDuckingDepth> maxDuckingDepth_;
     boost::optional<AudioProgrammeReferenceScreen> refScreen_;
@@ -306,6 +344,18 @@ namespace adm {
   inline ElementRange<AudioContent> AudioProgramme::getReferences(
       detail::ParameterTraits<AudioContent>::tag) {
     return detail::makeElementRange<AudioContent>(audioContents_);
+  }
+
+  template <typename ElementType>
+  LabelConstRange<ElementType> AudioProgramme::getElements() const {
+    typedef typename detail::ParameterTraits<ElementType>::tag Tag;
+    return get(Tag());
+  }
+
+  template <typename ElementType>
+  LabelRange<ElementType> AudioProgramme::getElements() {
+    typedef typename detail::ParameterTraits<ElementType>::tag Tag;
+    return get(Tag());
   }
 
   template <typename Element>

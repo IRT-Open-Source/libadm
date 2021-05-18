@@ -1,6 +1,7 @@
 #define CATCH_CONFIG_ENABLE_CHRONO_STRINGMAKER
 #include <catch2/catch.hpp>
 #include "adm/elements/audio_programme.hpp"
+#include "adm/elements/label.hpp"
 
 TEST_CASE("audio_programme") {
   using namespace adm;
@@ -16,6 +17,14 @@ TEST_CASE("audio_programme") {
     audioProgramme->set(MaxDuckingDepth(-30));
     // NOTE: AudioProgrammeReferenceScreen is not yet implemented.
     // audioProgramme->set(AudioProgrammeReferenceScreen());
+
+    auto label_en =
+        AudioProgrammeLabel(LabelValue("Good morning"), LabelLanguage("en"));
+    auto label_fr =
+        AudioProgrammeLabel(LabelValue("Bonjour"), LabelLanguage("fr"));
+
+    audioProgramme->add(label_en);
+    audioProgramme->add(label_fr);
 
     REQUIRE(audioProgramme->has<AudioProgrammeId>());
     REQUIRE(audioProgramme->has<AudioProgrammeName>());
@@ -37,6 +46,10 @@ TEST_CASE("audio_programme") {
     REQUIRE(audioProgramme->get<MaxDuckingDepth>() == -30);
     // NOTE: AudioProgrammeReferenceScreen is not yet implemented.
     // REQUIRE(audioProgramme->get<AudioProgrammeReferenceScreen>() == ???);
+    auto labels = audioProgramme->getElements<AudioProgrammeLabel>();
+    REQUIRE(labels.size() == 2);
+    REQUIRE(labels[0] == label_en);
+    REQUIRE(labels[1] == label_fr);
 
     audioProgramme->unset<AudioProgrammeLanguage>();
     audioProgramme->unset<Start>();
@@ -45,6 +58,9 @@ TEST_CASE("audio_programme") {
     audioProgramme->unset<MaxDuckingDepth>();
     // NOTE: AudioProgrammeReferenceScreen is not yet implemented.
     // audioProgramme->unset<AudioProgrammeReferenceScreen>();
+
+    audioProgramme->clearAudioProgrammeLabels();
+    REQUIRE(audioProgramme->getElements<AudioProgrammeLabel>().size() == 0);
 
     REQUIRE(!audioProgramme->has<AudioProgrammeLanguage>());
     REQUIRE(audioProgramme->has<Start>());

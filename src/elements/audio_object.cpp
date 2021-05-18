@@ -298,6 +298,46 @@ namespace adm {
     return audioComplementaryObjects_.clear();
   }
 
+  // --- Elements --- //
+  void AudioObject::add(AudioObjectLabel label) {
+    audioObjectLabels_.push_back(label);
+  }
+
+  void AudioObject::add(AudioComplementaryObjectGroupLabel label) {
+    audioComplementaryObjectGroupLabels_.push_back(label);
+  }
+
+  void AudioObject::clearAudioObjectLabels() { audioObjectLabels_.clear(); }
+  void AudioObject::clearAudioComplementaryObjectGroupLabels() {
+    audioComplementaryObjectGroupLabels_.clear();
+  }
+
+  LabelConstRange<AudioObjectLabel> AudioObject::get(
+      detail::ParameterTraits<AudioObjectLabel>::tag) const {
+    return boost::make_iterator_range(audioObjectLabels_.begin(),
+                                      audioObjectLabels_.end());
+  }
+
+  LabelRange<AudioObjectLabel> AudioObject::get(
+      detail::ParameterTraits<AudioObjectLabel>::tag) {
+    return boost::make_iterator_range(audioObjectLabels_.begin(),
+                                      audioObjectLabels_.end());
+  }
+
+  LabelConstRange<AudioComplementaryObjectGroupLabel> AudioObject::get(
+      detail::ParameterTraits<AudioComplementaryObjectGroupLabel>::tag) const {
+    return boost::make_iterator_range(
+        audioComplementaryObjectGroupLabels_.begin(),
+        audioComplementaryObjectGroupLabels_.end());
+  }
+
+  LabelRange<AudioComplementaryObjectGroupLabel> AudioObject::get(
+      detail::ParameterTraits<AudioComplementaryObjectGroupLabel>::tag) {
+    return boost::make_iterator_range(
+        audioComplementaryObjectGroupLabels_.begin(),
+        audioComplementaryObjectGroupLabels_.end());
+  }
+
   // ---- Common ---- //
   void AudioObject::print(std::ostream& os) const {
     os << get<AudioObjectId>();

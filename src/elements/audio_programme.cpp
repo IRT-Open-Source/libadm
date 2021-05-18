@@ -135,6 +135,15 @@ namespace adm {
     refScreen_ = boost::none;
   }
 
+  // --- Elements --- //
+  void AudioProgramme::add(AudioProgrammeLabel label) {
+    audioProgrammeLabels_.push_back(label);
+  }
+
+  void AudioProgramme::clearAudioProgrammeLabels() {
+    audioProgrammeLabels_.clear();
+  }
+
   // ---- References ---- //
   bool AudioProgramme::addReference(std::shared_ptr<AudioContent> content) {
     autoParent(shared_from_this(), content);
@@ -166,6 +175,18 @@ namespace adm {
   void AudioProgramme::clearReferences(
       detail::ParameterTraits<AudioContent>::tag) {
     audioContents_.clear();
+  }
+
+  LabelConstRange<AudioProgrammeLabel> AudioProgramme::get(
+      detail::ParameterTraits<AudioProgrammeLabel>::tag) const {
+    return boost::make_iterator_range(audioProgrammeLabels_.begin(),
+                                      audioProgrammeLabels_.end());
+  }
+
+  LabelRange<AudioProgrammeLabel> AudioProgramme::get(
+      detail::ParameterTraits<AudioProgrammeLabel>::tag) {
+    return boost::make_iterator_range(audioProgrammeLabels_.begin(),
+                                      audioProgrammeLabels_.end());
   }
 
   // ---- Common ---- //

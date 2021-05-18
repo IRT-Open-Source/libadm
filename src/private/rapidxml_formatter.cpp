@@ -59,6 +59,7 @@ namespace adm {
       node.addOptionalAttribute<MaxDuckingDepth>(programme, "maxDuckingDepth");
       node.addReferences<AudioContent, AudioContentId>(programme, "audioContentIDRef");
       node.addOptionalElement<LoudnessMetadata>(programme, "loudnessMetadata", &formatLoudnessMetadata);
+      node.addElements<AudioProgrammeLabel>(programme, "audioProgrammeLabel", &formatLabel<AudioProgrammeLabel>);
       // clang-format on
     }
 
@@ -81,6 +82,21 @@ namespace adm {
                                                 "dialogueLoudness");
     }
 
+    template <typename LabelType>
+    void formatLabel(XmlNode &node, const LabelType &label) {
+      // clang-format off
+        if (label.template has<LabelLanguage>()) {
+            node.addAttribute(
+                "language",
+                label.template get<LabelLanguage>().get());
+        }
+        if (label.template has<LabelValue>()) {
+            node.setValue(
+                label.template get<LabelValue>().get());
+        }
+      // clang-format on
+    }
+
     void formatAudioContent(XmlNode &node,
                             std::shared_ptr<const AudioContent> content) {
       // clang-format off
@@ -92,6 +108,7 @@ namespace adm {
       node.addOptionalElement<NonDialogueContentKind>(content, "dialogue", &formatNonDialogueContentKind);
       node.addOptionalElement<DialogueContentKind>(content, "dialogue", &formatDialogueContentKind);
       node.addOptionalElement<MixedContentKind>(content, "dialogue", &formatMixedContentKind);
+      node.addElements<AudioContentLabel>(content, "audioContentLabel", &formatLabel<AudioContentLabel>);
       // clang-format on
     }
 
@@ -136,6 +153,8 @@ namespace adm {
         node.addElement<AudioObjectId>(element, "audioComplementaryObjectIDRef");
       }
       node.addReferences<AudioTrackUid, AudioTrackUidId>(object, "audioTrackUIDRef");
+      node.addElements<AudioObjectLabel>(object, "audioObjectLabel", &formatLabel<AudioObjectLabel>);
+      node.addElements<AudioComplementaryObjectGroupLabel>(object, "audioComplementaryObjectGroupLabel", &formatLabel<AudioComplementaryObjectGroupLabel>);
       // clang-format on
     }
 

@@ -150,6 +150,8 @@ namespace adm {
       setOptionalElement<AudioProgrammeReferenceScreen>(node, "audioProgrammeReferenceScreen", audioProgramme, &parseAudioProgrammeReferenceScreen);
 
       addOptionalReferences<AudioContentId>(node, "audioContentIDRef", audioProgramme, programmeContentRefs_, &parseAudioContentId);
+
+      addOptionalElements<AudioProgrammeLabel>(node, "audioProgrammeLabel", audioProgramme, &parseAudioProgrammeLabel);
       // clang-format on
       return audioProgramme;
     }
@@ -169,6 +171,8 @@ namespace adm {
       setOptionalElement<ContentKind>(node, "dialogue", audioContent, &parseContentKind);
 
       addOptionalReferences<AudioObjectId>(node, "audioObjectIDRef", audioContent, contentObjectRefs_, &parseAudioObjectId);
+
+      addOptionalElements<AudioContentLabel>(node, "audioContentLabel", audioContent, &parseAudioContentLabel);
       // clang-format on
       return audioContent;
     }
@@ -193,6 +197,8 @@ namespace adm {
       addOptionalReferences<AudioPackFormatId>(node, "audioPackFormatIDRef", audioObject, objectPackFormatRefs_, &parseAudioPackFormatId);
       addOptionalReferences<AudioTrackUidId>(node, "audioTrackUIDRef", audioObject, objectTrackUidRefs_, &parseAudioTrackUidId);
       setOptionalElement<AudioObjectInteraction>(node, "audioObjectInteraction", audioObject, &parseAudioObjectInteraction);
+      addOptionalElements<AudioObjectLabel>(node, "audioObjectLabel", audioObject, &parseAudioObjectLabel);
+      addOptionalElements<AudioComplementaryObjectGroupLabel>(node, "audioComplementaryObjectGroupLabel", audioObject, &parseAudioComplementaryObjectGroupLabel);
       // clang-format on
       return audioObject;
     }
@@ -335,9 +341,9 @@ namespace adm {
         }
       } else if (audioChannelFormat->get<TypeDescriptor>() ==
                  TypeDefinition::HOA) {
-         for (auto& element : elements) {
-            audioChannelFormat->add(parseAudioBlockFormatHoa(element));
-         }
+        for (auto& element : elements) {
+          audioChannelFormat->add(parseAudioBlockFormatHoa(element));
+        }
       } else if (audioChannelFormat->get<TypeDescriptor>() ==
                  TypeDefinition::BINAURAL) {
         // for (auto& element : elements) {
@@ -594,6 +600,35 @@ namespace adm {
       return audioBlockFormat;
     }
 
+    AudioProgrammeLabel parseAudioProgrammeLabel(NodePtr node) {
+      auto label = AudioProgrammeLabel();
+      setOptionalAttribute<LabelLanguage>(node, "language", label);
+      setValue<LabelValue>(node, label);
+      return label;
+    }
+
+    AudioContentLabel parseAudioContentLabel(NodePtr node) {
+      auto label = AudioContentLabel();
+      setOptionalAttribute<LabelLanguage>(node, "language", label);
+      setValue<LabelValue>(node, label);
+      return label;
+    }
+
+    AudioObjectLabel parseAudioObjectLabel(NodePtr node) {
+      auto label = AudioObjectLabel();
+      setOptionalAttribute<LabelLanguage>(node, "language", label);
+      setValue<LabelValue>(node, label);
+      return label;
+    }
+
+    AudioComplementaryObjectGroupLabel parseAudioComplementaryObjectGroupLabel(
+        NodePtr node) {
+      auto label = AudioComplementaryObjectGroupLabel();
+      setOptionalAttribute<LabelLanguage>(node, "language", label);
+      setValue<LabelValue>(node, label);
+      return label;
+    }
+
     ChannelLock parseChannelLock(NodePtr node) {
       ChannelLock channelLock;
       setValue<ChannelLockFlag>(node, channelLock);
@@ -731,9 +766,8 @@ namespace adm {
 
     /* Below here Hoa */
 
-    AudioBlockFormatHoa parseAudioBlockFormatHoa(
-        NodePtr node) {
-        AudioBlockFormatHoa audioBlockFormat{Order(), Degree()};
+    AudioBlockFormatHoa parseAudioBlockFormatHoa(NodePtr node) {
+      AudioBlockFormatHoa audioBlockFormat{Order(), Degree()};
       // clang-format off
       setOptionalAttribute<AudioBlockFormatId>(node, "audioBlockFormatID", audioBlockFormat, &parseAudioBlockFormatId);
       setOptionalAttribute<Rtime>(node, "rtime", audioBlockFormat, &parseTimecode);

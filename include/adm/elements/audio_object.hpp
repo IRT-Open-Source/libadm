@@ -10,6 +10,7 @@
 #include "adm/elements/audio_track_uid.hpp"
 #include "adm/elements/dialogue.hpp"
 #include "adm/elements/importance.hpp"
+#include "adm/elements/label.hpp"
 #include "adm/elements_fwd.hpp"
 #include "adm/helper/element_range.hpp"
 #include "adm/detail/named_option_helper.hpp"
@@ -180,6 +181,44 @@ namespace adm {
     ADM_EXPORT void clearComplementaryObjects();
 
     /**
+     * @brief Add AudioObjectLabel
+     */
+    ADM_EXPORT void add(AudioObjectLabel label);
+
+    /**
+     * @brief Add AudioComplementaryObjectGroupLabel
+     */
+    ADM_EXPORT void add(AudioComplementaryObjectGroupLabel label);
+
+    /**
+     * @brief ElementType elements getter template
+     *
+     * Templated getter with the wanted ElementType type as template
+     * argument.
+     */
+    template <typename ElementType>
+    LabelConstRange<ElementType> getElements() const;
+
+    /**
+     * @brief ElementType elements getter template
+     *
+     * Templated getter with the wanted ElementType type as template
+     * argument.
+     */
+    template <typename ElementType>
+    LabelRange<ElementType> getElements();
+
+    /**
+     * @brief remove all AudioObjectLabel instances
+     */
+    ADM_EXPORT void clearAudioObjectLabels();
+
+    /**
+     * @brief remove all AudioComplementaryObjectGroupLabel instances
+     */
+    ADM_EXPORT void clearAudioComplementaryObjectGroupLabels();
+
+    /**
      * @brief Print overview to ostream
      */
     void print(std::ostream &os) const;
@@ -261,6 +300,20 @@ namespace adm {
 
     ADM_EXPORT void disconnectReferences();
 
+    ADM_EXPORT
+    LabelConstRange<AudioObjectLabel> get(
+        detail::ParameterTraits<AudioObjectLabel>::tag) const;
+    ADM_EXPORT
+    LabelRange<AudioObjectLabel> get(
+        detail::ParameterTraits<AudioObjectLabel>::tag);
+
+    ADM_EXPORT
+    LabelConstRange<AudioComplementaryObjectGroupLabel> get(
+        detail::ParameterTraits<AudioComplementaryObjectGroupLabel>::tag) const;
+    ADM_EXPORT
+    LabelRange<AudioComplementaryObjectGroupLabel> get(
+        detail::ParameterTraits<AudioComplementaryObjectGroupLabel>::tag);
+
     ADM_EXPORT void setParent(std::weak_ptr<Document> document);
 
     std::weak_ptr<Document> parent_;
@@ -270,6 +323,9 @@ namespace adm {
     std::vector<std::shared_ptr<AudioObject>> audioComplementaryObjects_;
     std::vector<std::shared_ptr<AudioPackFormat>> audioPackFormats_;
     std::vector<std::shared_ptr<AudioTrackUid>> audioTrackUids_;
+    std::vector<AudioObjectLabel> audioObjectLabels_;
+    std::vector<AudioComplementaryObjectGroupLabel>
+        audioComplementaryObjectGroupLabels_;
     boost::optional<Start> start_;
     boost::optional<Duration> duration_;
     boost::optional<DialogueId> dialogueId_;
@@ -352,6 +408,18 @@ namespace adm {
       detail::ParameterTraits<AudioTrackUid>::tag) {
     return detail::makeElementRange<AudioTrackUid>(audioTrackUids_);
   };
+
+  template <typename ElementType>
+  LabelConstRange<ElementType> AudioObject::getElements() const {
+    typedef typename detail::ParameterTraits<ElementType>::tag Tag;
+    return get(Tag());
+  }
+
+  template <typename ElementType>
+  LabelRange<ElementType> AudioObject::getElements() {
+    typedef typename detail::ParameterTraits<ElementType>::tag Tag;
+    return get(Tag());
+  }
 
   template <typename Element>
   void AudioObject::clearReferences() {
