@@ -1,4 +1,3 @@
-/// @file position.hpp
 #pragma once
 
 #include <boost/optional.hpp>
@@ -6,28 +5,22 @@
 #include <cmath>
 #include <iosfwd>
 #include "adm/elements/position_types.hpp"
-#include "adm/elements/screen_edge_lock.hpp"
+#include "adm/elements/position_offset_types.hpp"
 #include "adm/detail/named_option_helper.hpp"
 #include "adm/detail/type_traits.hpp"
 #include "adm/export.h"
-#ifndef M_PI
-#define M_PI 3.14159265359f
-#endif
 
 namespace adm {
 
-  /// @brief Tag for SphericalPosition class
-  struct SphericalPositionTag {};
+  /// @brief Tag for SphericalPositionOffset class
+  struct SphericalPositionOffsetTag {};
   /**
    * @brief ADM parameter class to specify a spherical position
    */
-  class SphericalPosition {
+  class SphericalPositionOffset {
    public:
-    typedef SphericalPositionTag tag;
+    typedef SphericalPositionOffsetTag tag;
 
-    /// @brief Constructor without optional parameters
-    ADM_EXPORT SphericalPosition(Azimuth azimuth = Azimuth(0.f),
-                                 Elevation elevation = Elevation(0.f));
     /**
      * @brief Constructor template
      *
@@ -35,8 +28,7 @@ namespace adm {
      * in random order after the mandatory ADM parameters.
      */
     template <typename... Parameters>
-    SphericalPosition(Azimuth azimuth, Elevation elevation,
-                      Parameters... optionalNamedArgs);
+    SphericalPositionOffset(Parameters... optionalNamedArgs);
 
     /**
      * @brief ADM parameter getter template
@@ -67,13 +59,11 @@ namespace adm {
     bool isDefault() const;
 
     /// @brief Azimuth setter
-    ADM_EXPORT void set(Azimuth azimuth);
+    ADM_EXPORT void set(AzimuthOffset azimuth);
     /// @brief Elevation setter
-    ADM_EXPORT void set(Elevation elevation);
-    /// @brief Distance setter
-    ADM_EXPORT void set(Distance distance);
-    /// @brief ScreenEdgeLock setter
-    ADM_EXPORT void set(ScreenEdgeLock screenEdgeLock);
+    ADM_EXPORT void set(ElevationOffset elevation);
+    /// @brief DistanceOffset setter
+    ADM_EXPORT void set(DistanceOffset distance);
 
     /**
      * @brief ADM parameter unset template
@@ -91,43 +81,47 @@ namespace adm {
     void print(std::ostream& os) const;
 
    private:
-    ADM_EXPORT Azimuth get(detail::ParameterTraits<Azimuth>::tag) const;
-    ADM_EXPORT Elevation get(detail::ParameterTraits<Elevation>::tag) const;
-    ADM_EXPORT Distance get(detail::ParameterTraits<Distance>::tag) const;
-    ADM_EXPORT ScreenEdgeLock
-        get(detail::ParameterTraits<ScreenEdgeLock>::tag) const;
+    ADM_EXPORT AzimuthOffset
+        get(detail::ParameterTraits<AzimuthOffset>::tag) const;
+    ADM_EXPORT ElevationOffset
+        get(detail::ParameterTraits<ElevationOffset>::tag) const;
+    ADM_EXPORT DistanceOffset
+        get(detail::ParameterTraits<DistanceOffset>::tag) const;
 
-    ADM_EXPORT bool has(detail::ParameterTraits<Azimuth>::tag) const;
-    ADM_EXPORT bool has(detail::ParameterTraits<Elevation>::tag) const;
-    ADM_EXPORT bool has(detail::ParameterTraits<Distance>::tag) const;
-    ADM_EXPORT bool has(detail::ParameterTraits<ScreenEdgeLock>::tag) const;
+    ADM_EXPORT bool has(detail::ParameterTraits<AzimuthOffset>::tag) const;
+    ADM_EXPORT bool has(detail::ParameterTraits<ElevationOffset>::tag) const;
+    ADM_EXPORT bool has(detail::ParameterTraits<DistanceOffset>::tag) const;
 
     template <typename Tag>
     bool isDefault(Tag) const {
       return false;
     }
-    ADM_EXPORT bool isDefault(detail::ParameterTraits<Distance>::tag) const;
+    ADM_EXPORT bool isDefault(
+        detail::ParameterTraits<AzimuthOffset>::tag) const;
+    ADM_EXPORT bool isDefault(
+        detail::ParameterTraits<ElevationOffset>::tag) const;
+    ADM_EXPORT bool isDefault(
+        detail::ParameterTraits<DistanceOffset>::tag) const;
 
-    ADM_EXPORT void unset(detail::ParameterTraits<Distance>::tag);
-    ADM_EXPORT void unset(detail::ParameterTraits<ScreenEdgeLock>::tag);
+    ADM_EXPORT void unset(detail::ParameterTraits<AzimuthOffset>::tag);
+    ADM_EXPORT void unset(detail::ParameterTraits<ElevationOffset>::tag);
+    ADM_EXPORT void unset(detail::ParameterTraits<DistanceOffset>::tag);
 
-    Azimuth azimuth_;
-    Elevation elevation_;
-    boost::optional<Distance> distance_;
-    boost::optional<ScreenEdgeLock> screenEdgeLock_;
+    boost::optional<AzimuthOffset> azimuth_;
+    boost::optional<ElevationOffset> elevation_;
+    boost::optional<DistanceOffset> distance_;
 
-    static const Distance distanceDefault_;
+    static const AzimuthOffset azimuthDefault_;
+    static const ElevationOffset elevationDefault_;
+    static const DistanceOffset distanceDefault_;
   };
 
-  /// @brief Tag for CartesianPosition class
-  struct CartesianPositionTag {};
+  /// @brief Tag for CartesianPositionOffset class
+  struct CartesianPositionOffsetTag {};
   /// @brief ADM parameter class to specify a cartesian position
-  class CartesianPosition {
+  class CartesianPositionOffset {
    public:
-    typedef CartesianPositionTag tag;
-
-    /// @brief Constructor without optional parameters
-    ADM_EXPORT CartesianPosition(X x = X(0.f), Y y = Y(1.f));
+    typedef CartesianPositionOffsetTag tag;
 
     /**
      * @brief Constructor template
@@ -136,7 +130,7 @@ namespace adm {
      * in random order after the mandatory ADM parameters.
      */
     template <typename... Parameters>
-    CartesianPosition(X x, Y y, Parameters... optionalNamedArgs);
+    CartesianPositionOffset(Parameters... optionalNamedArgs);
 
     /**
      * @brief ADM parameter getter template
@@ -166,14 +160,12 @@ namespace adm {
     template <typename Parameter>
     bool isDefault() const;
 
-    /// @brief X setter
-    ADM_EXPORT void set(X x);
-    /// @brief Y setter
-    ADM_EXPORT void set(Y y);
-    /// @brief Z setter
-    ADM_EXPORT void set(Z z);
-    /// @brief ScreenEdgeLock setter
-    ADM_EXPORT void set(ScreenEdgeLock screenEdgeLock);
+    /// @brief XOffset setter
+    ADM_EXPORT void set(XOffset x);
+    /// @brief YOffset setter
+    ADM_EXPORT void set(YOffset y);
+    /// @brief ZOffset setter
+    ADM_EXPORT void set(ZOffset z);
 
     /**
      * @brief ADM parameter unset template
@@ -191,107 +183,107 @@ namespace adm {
     void print(std::ostream& os) const;
 
    private:
-    ADM_EXPORT X get(detail::ParameterTraits<X>::tag) const;
-    ADM_EXPORT Y get(detail::ParameterTraits<Y>::tag) const;
-    ADM_EXPORT Z get(detail::ParameterTraits<Z>::tag) const;
-    ADM_EXPORT ScreenEdgeLock
-        get(detail::ParameterTraits<ScreenEdgeLock>::tag) const;
+    ADM_EXPORT XOffset get(detail::ParameterTraits<XOffset>::tag) const;
+    ADM_EXPORT YOffset get(detail::ParameterTraits<YOffset>::tag) const;
+    ADM_EXPORT ZOffset get(detail::ParameterTraits<ZOffset>::tag) const;
 
-    ADM_EXPORT bool has(detail::ParameterTraits<X>::tag) const;
-    ADM_EXPORT bool has(detail::ParameterTraits<Y>::tag) const;
-    ADM_EXPORT bool has(detail::ParameterTraits<Z>::tag) const;
-    ADM_EXPORT bool has(detail::ParameterTraits<ScreenEdgeLock>::tag) const;
+    ADM_EXPORT bool has(detail::ParameterTraits<XOffset>::tag) const;
+    ADM_EXPORT bool has(detail::ParameterTraits<YOffset>::tag) const;
+    ADM_EXPORT bool has(detail::ParameterTraits<ZOffset>::tag) const;
 
     template <typename Tag>
     bool isDefault(Tag) const {
       return false;
     }
-    ADM_EXPORT bool isDefault(detail::ParameterTraits<Z>::tag) const;
 
-    ADM_EXPORT void unset(detail::ParameterTraits<Z>::tag);
-    ADM_EXPORT void unset(detail::ParameterTraits<ScreenEdgeLock>::tag);
+    ADM_EXPORT bool isDefault(detail::ParameterTraits<XOffset>::tag) const;
+    ADM_EXPORT bool isDefault(detail::ParameterTraits<YOffset>::tag) const;
+    ADM_EXPORT bool isDefault(detail::ParameterTraits<ZOffset>::tag) const;
 
-    X x_;
-    Y y_;
-    boost::optional<Z> z_;
-    boost::optional<ScreenEdgeLock> screenEdgeLock_;
+    ADM_EXPORT void unset(detail::ParameterTraits<XOffset>::tag);
+    ADM_EXPORT void unset(detail::ParameterTraits<YOffset>::tag);
+    ADM_EXPORT void unset(detail::ParameterTraits<ZOffset>::tag);
 
-    static const Z zDefault_;
+    boost::optional<XOffset> x_;
+    boost::optional<YOffset> y_;
+    boost::optional<ZOffset> z_;
+
+    static const XOffset xDefault_;
+    static const YOffset yDefault_;
+    static const ZOffset zDefault_;
   };
 
-  ///@brief Type to hold a SphericalPosition or CartesianPosition
-  typedef boost::variant<SphericalPosition, CartesianPosition> Position;
-  ADD_TRAIT(Position, PositionTag);
+  ///@brief Type to hold a SphericalPositionOffset or CartesianPositionOffset
+  typedef boost::variant<SphericalPositionOffset, CartesianPositionOffset>
+      PositionOffset;
+  ADD_TRAIT(PositionOffset, PositionOffsetTag);
 
   // ---- Free functions ---- //
 
-  /// @brief Helper function to check if a ::Position is spherical
-  ADM_EXPORT bool isSpherical(const Position& position);
-  /// @brief Helper function to check if a ::Position is cartesian
-  ADM_EXPORT bool isCartesian(const Position& position);
+  /// @brief Helper function to check if a ::PositionOffset is spherical
+  ADM_EXPORT bool isSpherical(const PositionOffset& position);
+  /// @brief Helper function to check if a ::PositionOffset is cartesian
+  ADM_EXPORT bool isCartesian(const PositionOffset& position);
 
   // ---- Implementation ---- //
-
   template <typename... Parameters>
-  SphericalPosition::SphericalPosition(Azimuth azimuth, Elevation elevation,
-                                       Parameters... optionalNamedArgs)
-      : azimuth_(azimuth), elevation_(elevation) {
+  SphericalPositionOffset::SphericalPositionOffset(
+      Parameters... optionalNamedArgs) {
     detail::setNamedOptionHelper(
         this, std::forward<Parameters>(optionalNamedArgs)...);
   }
 
   template <typename Parameter>
-  Parameter SphericalPosition::get() const {
+  Parameter SphericalPositionOffset::get() const {
     typedef typename detail::ParameterTraits<Parameter>::tag Tag;
     return get(Tag());
   }
 
   template <typename Parameter>
-  bool SphericalPosition::has() const {
+  bool SphericalPositionOffset::has() const {
     typedef typename detail::ParameterTraits<Parameter>::tag Tag;
     return has(Tag());
   }
 
   template <typename Parameter>
-  bool SphericalPosition::isDefault() const {
+  bool SphericalPositionOffset::isDefault() const {
     typedef typename detail::ParameterTraits<Parameter>::tag Tag;
     return isDefault(Tag());
   }
 
   template <typename Parameter>
-  void SphericalPosition::unset() {
+  void SphericalPositionOffset::unset() {
     typedef typename detail::ParameterTraits<Parameter>::tag Tag;
     return unset(Tag());
   }
 
   template <typename... Parameters>
-  CartesianPosition::CartesianPosition(X x, Y y,
-                                       Parameters... optionalNamedArgs)
-      : x_(x), y_(y) {
+  CartesianPositionOffset::CartesianPositionOffset(
+      Parameters... optionalNamedArgs) {
     detail::setNamedOptionHelper(
         this, std::forward<Parameters>(optionalNamedArgs)...);
   }
 
   template <typename Parameter>
-  Parameter CartesianPosition::get() const {
+  Parameter CartesianPositionOffset::get() const {
     typedef typename detail::ParameterTraits<Parameter>::tag Tag;
     return get(Tag());
   }
 
   template <typename Parameter>
-  bool CartesianPosition::has() const {
+  bool CartesianPositionOffset::has() const {
     typedef typename detail::ParameterTraits<Parameter>::tag Tag;
     return has(Tag());
   }
 
   template <typename Parameter>
-  bool CartesianPosition::isDefault() const {
+  bool CartesianPositionOffset::isDefault() const {
     typedef typename detail::ParameterTraits<Parameter>::tag Tag;
     return isDefault(Tag());
   }
 
   template <typename Parameter>
-  void CartesianPosition::unset() {
+  void CartesianPositionOffset::unset() {
     typedef typename detail::ParameterTraits<Parameter>::tag Tag;
     return unset(Tag());
   }

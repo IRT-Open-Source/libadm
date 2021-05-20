@@ -194,6 +194,13 @@ namespace adm {
       addOptionalReferences<AudioPackFormatId>(node, "audioPackFormatIDRef", audioObject, objectPackFormatRefs_, &parseAudioPackFormatId);
       addOptionalReferences<AudioTrackUidId>(node, "audioTrackUIDRef", audioObject, objectTrackUidRefs_, &parseAudioTrackUidId);
       setOptionalElement<AudioObjectInteraction>(node, "audioObjectInteraction", audioObject, &parseAudioObjectInteraction);
+
+      if(guessCartesianFlag(node, "positionOffset") == Cartesian(true)) {
+        setOptionalMultiElement<CartesianPositionOffset>(node, "positionOffset", audioObject, &parseCartesianPositionOffset);
+      } else {
+        setOptionalMultiElement<SphericalPositionOffset>(node, "positionOffset", audioObject, &parseSphericalPositionOffset);
+      }
+
       // clang-format on
       return audioObject;
     }
@@ -573,7 +580,7 @@ namespace adm {
       setOptionalAttribute<Duration>(node, "duration", audioBlockFormat, &parseTimecode);
 
       setOptionalElement<Cartesian>(node, "cartesian", audioBlockFormat);
-      auto cartesianGuess = guessCartesianFlag(node);
+      auto cartesianGuess = guessCartesianFlag(node, "position");
       if(audioBlockFormat.get<Cartesian>() != cartesianGuess) {
         audioBlockFormat.set(cartesianGuess);
       }
@@ -626,8 +633,8 @@ namespace adm {
       return frequency;
     }
 
-    Cartesian guessCartesianFlag(NodePtr node) {
-      auto element = detail::findElement(node, "position");
+    Cartesian guessCartesianFlag(NodePtr node, const std::string& elementName) {
+      auto element = detail::findElement(node, elementName);
       if (element) {
         auto coordinate = element->first_attribute("coordinate");
         if (coordinate) {
@@ -673,6 +680,40 @@ namespace adm {
           setValue<Y>(element, position);
         } else if (axe == "Z") {
           setValue<Z>(element, position);
+        }
+      }
+      return position;
+    }
+
+    SphericalPositionOffset parseSphericalPositionOffset(
+        std::vector<NodePtr> nodes) {
+      SphericalPositionOffset position;
+      for (auto& element : nodes) {
+        auto coordinate =
+            parseAttribute<SphericalCoordinateValue>(element, "coordinate");
+        if (coordinate == "azimuth") {
+          setValue<AzimuthOffset>(element, position);
+        } else if (coordinate == "elevation") {
+          setValue<ElevationOffset>(element, position);
+        } else if (coordinate == "distance") {
+          setValue<DistanceOffset>(element, position);
+        }
+      }
+      return position;
+    }
+
+    CartesianPositionOffset parseCartesianPositionOffset(
+        std::vector<NodePtr> nodes) {
+      CartesianPositionOffset position;
+      for (auto& element : nodes) {
+        auto coordinate =
+            parseAttribute<CartesianCoordinateValue>(element, "coordinate");
+        if (coordinate == "X") {
+          setValue<XOffset>(element, position);
+        } else if (coordinate == "Y") {
+          setValue<YOffset>(element, position);
+        } else if (coordinate == "Z") {
+          setValue<ZOffset>(element, position);
         }
       }
       return position;

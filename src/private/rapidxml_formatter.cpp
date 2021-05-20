@@ -134,6 +134,7 @@ namespace adm {
         node.addElement<AudioObjectId>(element, "audioComplementaryObjectIDRef");
       }
       node.addReferences<AudioTrackUid, AudioTrackUidId>(object, "audioTrackUIDRef");
+      node.addOptionalMultiElement<PositionOffset>(object, "positionOffset", &formatPositionOffset);
       // clang-format on
     }
 
@@ -502,6 +503,35 @@ namespace adm {
             cartesianPosition.get<Y>(), name,
             detail::formatMultiElementAttribute("coordinate", "Y"));
         parentNode.addOptionalElement<Z>(
+            &cartesianPosition, name,
+            detail::formatMultiElementAttribute("coordinate", "Z"));
+      }
+    }
+
+    void formatPositionOffset(XmlNode &parentNode, const std::string &name,
+                              const PositionOffset &positionOffset) {
+      if (isSpherical(positionOffset)) {
+        auto sphericalPosition =
+            boost::get<SphericalPositionOffset>(positionOffset);
+        parentNode.addOptionalElement<AzimuthOffset>(
+            &sphericalPosition, name,
+            detail::formatMultiElementAttribute("coordinate", "azimuth"));
+        parentNode.addOptionalElement<ElevationOffset>(
+            &sphericalPosition, name,
+            detail::formatMultiElementAttribute("coordinate", "elevation"));
+        parentNode.addOptionalElement<DistanceOffset>(
+            &sphericalPosition, name,
+            detail::formatMultiElementAttribute("coordinate", "distance"));
+      } else {
+        auto cartesianPosition =
+            boost::get<CartesianPositionOffset>(positionOffset);
+        parentNode.addOptionalElement<XOffset>(
+            &cartesianPosition, name,
+            detail::formatMultiElementAttribute("coordinate", "X"));
+        parentNode.addOptionalElement<YOffset>(
+            &cartesianPosition, name,
+            detail::formatMultiElementAttribute("coordinate", "Y"));
+        parentNode.addOptionalElement<ZOffset>(
             &cartesianPosition, name,
             detail::formatMultiElementAttribute("coordinate", "Z"));
       }
