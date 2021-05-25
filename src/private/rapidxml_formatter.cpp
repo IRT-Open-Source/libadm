@@ -134,6 +134,7 @@ namespace adm {
         node.addElement<AudioObjectId>(element, "audioComplementaryObjectIDRef");
       }
       node.addReferences<AudioTrackUid, AudioTrackUidId>(object, "audioTrackUIDRef");
+      node.addOptionalElement<Gain>(object, "gain", &formatGain);
       // clang-format on
     }
 
