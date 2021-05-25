@@ -128,13 +128,13 @@ namespace adm {
       node.addOptionalAttribute<Interact>(object, "interact");
       node.addOptionalAttribute<DisableDucking>(object, "disableDucking");
       node.addOptionalElement<AudioObjectInteraction>(object, "audioObjectInteraction", &formatAudioObjectInteraction);
-      node.addOptionalElement<Gain>(object, "gain", &formatGain);
       node.addReferences<AudioPackFormat, AudioPackFormatId>(object, "audioPackFormatIDRef");
       node.addReferences<AudioObject, AudioObjectId>(object, "audioObjectIDRef");
       for (auto &element : object->getComplementaryObjects()) {
         node.addElement<AudioObjectId>(element, "audioComplementaryObjectIDRef");
       }
       node.addReferences<AudioTrackUid, AudioTrackUidId>(object, "audioTrackUIDRef");
+      node.addOptionalElement<Gain>(object, "gain", &formatGain);
       // clang-format on
     }
 
