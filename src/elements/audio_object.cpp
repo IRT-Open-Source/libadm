@@ -47,9 +47,6 @@ namespace adm {
       detail::ParameterTraits<AudioObjectInteraction>::tag) const {
     return audioObjectInteraction_.get();
   }
-  Gain AudioObject::get(detail::ParameterTraits<Gain>::tag) const {
-    return gain_.get();
-  }
 
   // ---- Has ---- //
   bool AudioObject::has(detail::ParameterTraits<AudioObjectId>::tag) const {
@@ -80,9 +77,6 @@ namespace adm {
       detail::ParameterTraits<AudioObjectInteraction>::tag) const {
     return audioObjectInteraction_ != boost::none;
   }
-  bool AudioObject::has(detail::ParameterTraits<Gain>::tag) const {
-    return gain_ != boost::none;
-  }
 
   // ---- isDefault ---- //
   bool AudioObject::isDefault(detail::ParameterTraits<Start>::tag) const {
@@ -112,7 +106,6 @@ namespace adm {
   void AudioObject::set(AudioObjectInteraction audioObjectInteraction) {
     audioObjectInteraction_ = audioObjectInteraction;
   }
-  void AudioObject::set(Gain gain) { gain_ = gain; }
 
   // ---- Unsetter ---- //
   void AudioObject::unset(detail::ParameterTraits<Start>::tag) {
@@ -136,10 +129,6 @@ namespace adm {
   void AudioObject::unset(
       detail::ParameterTraits<AudioObjectInteraction>::tag) {
     audioObjectInteraction_ = boost::none;
-  }
-  void AudioObject::unset(
-      detail::ParameterTraits<Gain>::tag) {
-    gain_ = boost::none;
   }
 
   // ---- References ---- //

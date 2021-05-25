@@ -60,7 +60,7 @@ TEST_CASE("audio_object_basic") {
   REQUIRE(audioObject->has<Interact>() == false);
   REQUIRE(audioObject->has<DisableDucking>() == false);
   REQUIRE(audioObject->has<AudioObjectInteraction>() == false);
-  REQUIRE(audioObject->has<Gain>() == false);
+  REQUIRE(audioObject->has<Gain>() == true);
 }
 
 TEST_CASE("audio_object_references") {

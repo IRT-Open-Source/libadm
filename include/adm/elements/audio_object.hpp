@@ -8,11 +8,13 @@
 #include "adm/elements/audio_object_interaction.hpp"
 #include "adm/elements/audio_pack_format.hpp"
 #include "adm/elements/audio_track_uid.hpp"
+#include "adm/elements/private/common_parameters.hpp"
 #include "adm/elements/dialogue.hpp"
 #include "adm/elements/gain.hpp"
 #include "adm/elements/importance.hpp"
 #include "adm/elements_fwd.hpp"
 #include "adm/helper/element_range.hpp"
+#include "adm/detail/auto_base.hpp"
 #include "adm/detail/named_option_helper.hpp"
 #include "adm/detail/named_type.hpp"
 #include "adm/export.h"
@@ -36,12 +38,18 @@ namespace adm {
 
   /// @brief Tag for AudioObject
   struct AudioObjectTag {};
+
+  namespace detail {
+    using AudioObjectBase = HasParameters<DefaultParameter<Gain>>;
+  }
+
   /**
    * @brief Class representation of the audioObject ADM element
    *
    * @headerfile audio_object.hpp <adm/elements/audio_object.hpp>
    */
-  class AudioObject : public std::enable_shared_from_this<AudioObject> {
+  class AudioObject : public std::enable_shared_from_this<AudioObject>,
+                      private detail::AudioObjectBase {
    public:
     typedef AudioObjectTag tag;
     /// Type that holds the id for this element;
@@ -96,6 +104,8 @@ namespace adm {
     template <typename Parameter>
     bool isDefault() const;
 
+    using detail::AudioObjectBase::set;
+
     /// @brief AudioObjectId setter
     ADM_EXPORT void set(AudioObjectId id);
     /// @brief AudioObjectName setter
@@ -114,8 +124,6 @@ namespace adm {
     ADM_EXPORT void set(DisableDucking disableDucking);
     /// @brief AudioObjectInteraction setter
     ADM_EXPORT void set(AudioObjectInteraction objectInteraction);
-    /// @brief Gain setter
-    ADM_EXPORT void set(Gain gain);
 
     /**
      * @brief ADM parameter unset template
@@ -197,6 +205,11 @@ namespace adm {
     ADM_EXPORT AudioObject(const AudioObject &) = default;
     ADM_EXPORT AudioObject(AudioObject &&) = default;
 
+    using detail::AudioObjectBase::get;
+    using detail::AudioObjectBase::has;
+    using detail::AudioObjectBase::isDefault;
+    using detail::AudioObjectBase::unset;
+
     ADM_EXPORT AudioObjectId
         get(detail::ParameterTraits<AudioObjectId>::tag) const;
     ADM_EXPORT AudioObjectName
@@ -210,7 +223,6 @@ namespace adm {
         get(detail::ParameterTraits<DisableDucking>::tag) const;
     ADM_EXPORT AudioObjectInteraction
         get(detail::ParameterTraits<AudioObjectInteraction>::tag) const;
-    ADM_EXPORT Gain get(detail::ParameterTraits<Gain>::tag) const;
 
     ADM_EXPORT bool has(detail::ParameterTraits<AudioObjectId>::tag) const;
     ADM_EXPORT bool has(detail::ParameterTraits<AudioObjectName>::tag) const;
@@ -222,7 +234,6 @@ namespace adm {
     ADM_EXPORT bool has(detail::ParameterTraits<DisableDucking>::tag) const;
     ADM_EXPORT bool has(
         detail::ParameterTraits<AudioObjectInteraction>::tag) const;
-    ADM_EXPORT bool has(detail::ParameterTraits<Gain>::tag) const;
 
     template <typename Tag>
     bool isDefault(Tag) const {
@@ -238,7 +249,6 @@ namespace adm {
     ADM_EXPORT void unset(detail::ParameterTraits<Interact>::tag);
     ADM_EXPORT void unset(detail::ParameterTraits<DisableDucking>::tag);
     ADM_EXPORT void unset(detail::ParameterTraits<AudioObjectInteraction>::tag);
-    ADM_EXPORT void unset(detail::ParameterTraits<Gain>::tag);
 
     bool isAudioObjectReferenceCycle(
         std::shared_ptr<AudioObject> destinationObject);
@@ -283,7 +293,6 @@ namespace adm {
     boost::optional<Interact> interact_;
     boost::optional<DisableDucking> disableDucking_;
     boost::optional<AudioObjectInteraction> audioObjectInteraction_;
-    boost::optional<Gain> gain_;
   };
 
   // ---- Implementation ---- //
