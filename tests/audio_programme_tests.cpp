@@ -47,6 +47,13 @@ TEST_CASE("audio_programme parameters") {
   SECTION("MaxDuckingDepth") {
     check_optional_param<MaxDuckingDepth>(audioProgramme, canBeSetTo(-30.0));
   }
+  // TODO: replace with check_vector_parameter
+  SECTION("Labels") {
+    audioProgramme->add(Label(LabelValue("ohai")));
+    REQUIRE(audioProgramme->has<Labels>());
+    audioProgramme->remove(Label(LabelValue("ohai")));
+    REQUIRE(!audioProgramme->has<Labels>());
+  }
 }
 
 TEST_CASE("audio_programme references") {

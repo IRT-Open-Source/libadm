@@ -7,9 +7,11 @@
 #include "adm/elements/audio_content_id.hpp"
 #include "adm/elements/audio_object.hpp"
 #include "adm/elements/dialogue.hpp"
+#include "adm/elements/label.hpp"
 #include "adm/elements/loudness_metadata.hpp"
 #include "adm/elements_fwd.hpp"
 #include "adm/helper/element_range.hpp"
+#include "adm/detail/auto_base.hpp"
 #include "adm/detail/named_option_helper.hpp"
 #include "adm/export.h"
 #include "adm/detail/auto_base.hpp"
@@ -28,12 +30,12 @@ namespace adm {
   /// audioContent element
   using AudioContentLanguage =
       detail::NamedType<std::string, AudioContentLanguageTag>;
-
   /// @brief Tag for AudioContent
   struct AudioContentTag {};
 
   namespace detail {
-    using AudioContentBase = HasParameters<VectorParameter<LoudnessMetadatas>>;
+    using AudioContentBase = HasParameters<VectorParameter<Labels>,
+                                           VectorParameter<LoudnessMetadatas>>;
   }  // namespace detail
 
   /**
@@ -101,6 +103,10 @@ namespace adm {
      */
     template <typename Parameter>
     bool isDefault() const;
+
+    using detail::AudioContentBase::add;
+    using detail::AudioContentBase::remove;
+    using detail::AudioContentBase::set;
 
     /// @brief AudioContentId setter
     ADM_EXPORT void set(AudioContentId id);
@@ -189,10 +195,6 @@ namespace adm {
 
     /// Get adm::Document this element belongs to
     ADM_EXPORT std::weak_ptr<Document> getParent() const;
-
-    using detail::AudioContentBase::add;
-    using detail::AudioContentBase::remove;
-    using detail::AudioContentBase::set;
 
    private:
     friend class AudioContentAttorney;
