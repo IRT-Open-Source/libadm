@@ -133,4 +133,5 @@ Shared Elements
 .. doxygenclass:: adm::AudioBlockFormatId
 .. doxygentypedef:: adm::Rtime
 .. doxygentypedef:: adm::Duration
+.. doxygenclass:: adm::HeadphoneVirtualise
 .. doxygenclass:: adm::Gain

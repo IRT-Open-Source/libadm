@@ -56,6 +56,8 @@ namespace adm {
     // Combine is used by HasParameters, which recursively combines many *Base
     // classes.
 
+#ifndef IN_DOXYGEN
+
     struct Flags {
       static constexpr bool has_get_set_has = false;
       static constexpr bool has_isDefault_unset = false;
@@ -227,6 +229,8 @@ namespace adm {
      private:
       T value_;
     };
+
+#endif
 
   }  // namespace detail
 }  // namespace adm

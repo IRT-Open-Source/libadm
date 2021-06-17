@@ -65,6 +65,55 @@ namespace adm {
    * @brief Class representation for ADM element audioBlockFormat if
    * audioChannelFormat.typeDefinition == "Objects"
    *
+   * Supported parameters are as follows:
+   *
+   * \rst
+   * +---------------------+----------------------------------+--------------------------------+
+   * | ADM Parameter       | Parameter Type                   | Pattern Type                   |
+   * +=====================+==================================+================================+
+   * | audioBlockFormatId  | :cpp:class:`AudioBlockFormatId`  | :cpp:class:`RequiredParameter` |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | rtime               | :cpp:type:`Rtime`                | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | duration            | :cpp:type:`Duration`             | :cpp:class:`OptionalParameter` |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | cartesian           | :cpp:type:`Cartesian`            | custom, see below              |
+   * +---------------------+----------------------------------+                                |
+   * | position            | - :cpp:type:`Position`           |                                |
+   * |                     | - :cpp:type:`SphericalPosition`  |                                |
+   * |                     | - :cpp:type:`CartesianPosition`  |                                |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | width               | :cpp:type:`Width`                | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | height              | :cpp:type:`Height`               | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | depth               | :cpp:type:`Depth`                | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | diffuse             | :cpp:type:`Diffuse`              | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | gain                | :cpp:class:`Gain`                | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | importance          | :cpp:type:`Importance`           | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | headphoneVirtualise | :cpp:class:`HeadphoneVirtualise` | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | screenEdgeLock      | :cpp:class:`ScreenEdgeLock`      | :cpp:class:`OptionalParameter` |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | channelLock         | :cpp:class:`ChannelLock`         | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | objectDivergence    | :cpp:class:`ObjectDivergence`    | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | jumpPosition        | :cpp:class:`JumpPosition`        | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   * | screenRef           | :cpp:type:`ScreenRef`            | :cpp:class:`DefaultParameter`  |
+   * +---------------------+----------------------------------+--------------------------------+
+   *
+   * ``cartesian`` and ``position`` attributes are linked; see :cpp:func:`void
+   * set(Cartesian)`, :cpp:func:`void set(Position)`, :cpp:func:`void
+   * set(CartesianPosition)` and :cpp:func:`void set(SphericalPosition)`.
+   *
+   * \endrst
+   *
    * @warning This class has unsupported parameters
    *   - ZoneExclusion
    */
