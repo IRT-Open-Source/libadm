@@ -37,7 +37,7 @@ namespace adm {
     using tag = LabelTag;
 
     template <typename... Parameters>
-    Label(Parameters... namedArgs) {
+    explicit Label(Parameters... namedArgs) {
       detail::setNamedOptionHelper(this,
                                    std::forward<Parameters>(namedArgs)...);
     }
