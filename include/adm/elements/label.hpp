@@ -5,6 +5,7 @@
 #include "adm/export.h"
 #include "adm/detail/auto_base.hpp"
 #include "adm/detail/named_option_helper.hpp"
+#include "adm/detail/optional_comparison.hpp"
 
 namespace adm {
   /// Tag for LabelValue
@@ -48,17 +49,6 @@ namespace adm {
     using detail::AddWrapperMethods<Label>::isDefault;
     using detail::AddWrapperMethods<Label>::unset;
 
-    // TODO: replace this with something more generic
-    bool operator==(const Label& other) const {
-      if (get<LabelValue>() != other.get<LabelValue>()) return false;
-      if (has<LabelLanguage>() != other.has<LabelLanguage>()) return false;
-      if (has<LabelLanguage>() &&
-          get<LabelLanguage>() != other.get<LabelLanguage>())
-        return false;
-      return true;
-    }
-    bool operator!=(const Label& other) const { return !(*this != other); }
-
    private:
     using detail::LabelBase::get;
     using detail::LabelBase::has;
@@ -74,7 +64,15 @@ namespace adm {
   using Labels = std::vector<Label>;
   ADD_TRAIT(Labels, LabelsTag);
 
+  inline bool operator==(Label const& lhs, Label const& rhs) {
+    return detail::compareOptionals<LabelValue, LabelLanguage>(lhs, rhs);
+  }
+
+  inline bool operator!=(Label const& lhs, Label const& rhs) {
+    return !(lhs == rhs);
+  }
+
   namespace detail {
     extern template class ADM_EXPORT_TEMPLATE_METHODS VectorParameter<Labels>;
-  }
+  }  // namespace detail
 }  // namespace adm
