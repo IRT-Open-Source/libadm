@@ -6,6 +6,7 @@
 #include "adm/detail/auto_base.hpp"
 #include "adm/detail/named_option_helper.hpp"
 #include "adm/detail/optional_comparison.hpp"
+#include "adm/errors.hpp"
 
 namespace adm {
   /// Tag for LabelValue
@@ -42,6 +43,9 @@ namespace adm {
       detail::setNamedOptionHelper(this,
                                    std::forward<Parameters>(namedArgs)...);
     }
+
+    ADM_EXPORT explicit Label(std::string str) : Label(LabelValue(std::move(str))) {}
+    ADM_EXPORT explicit Label(const char* s);
 
     ADM_EXPORT void print(std::ostream& os) const;
 
