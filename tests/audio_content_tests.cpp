@@ -57,49 +57,18 @@ TEST_CASE("audio_content parameters") {
       check_vector_param<LoudnessMetadatas>(audioContent, canBeSetTo(loudness));
     }
   }
+  SECTION("Labels") {
+    Labels labels{Label(LabelValue("ohai"))};
+    SECTION("get/set") {
+      check_optional_param<Labels>(audioContent, canBeSetTo(labels));
+    }
+    SECTION("add/remove") {
+      check_vector_param<Labels>(audioContent, canBeSetTo(labels));
+    }
+  }
 }
 
 TEST_CASE("audio_content") {
-  {
-    auto audioContent = AudioContent::create(AudioContentName("MyContent"));
-    audioContent->set(AudioContentId(AudioContentIdValue(1)));
-    audioContent->set(AudioContentName("MyNewContent"));
-    audioContent->set(AudioContentLanguage("de"));
-    audioContent->add(LoudnessMetadata());
-    audioContent->set(Dialogue::NON_DIALOGUE);
-
-    REQUIRE(audioContent->has<AudioContentId>() == true);
-    REQUIRE(audioContent->has<AudioContentName>() == true);
-    REQUIRE(audioContent->has<AudioContentLanguage>() == true);
-    REQUIRE(audioContent->has<LoudnessMetadatas>() == true);
-    REQUIRE(audioContent->has<DialogueId>() == true);
-    REQUIRE(audioContent->has<NonDialogueContentKind>() == true);
-    REQUIRE(audioContent->has<DialogueContentKind>() == false);
-    REQUIRE(audioContent->has<MixedContentKind>() == false);
-
-    REQUIRE(audioContent->get<AudioContentId>().get<AudioContentIdValue>() ==
-            1u);
-    REQUIRE(audioContent->get<AudioContentName>() == "MyNewContent");
-    REQUIRE(audioContent->get<AudioContentLanguage>() == "de");
-    REQUIRE(audioContent->get<DialogueId>() == Dialogue::NON_DIALOGUE);
-
-    audioContent->unset<AudioContentLanguage>();
-    audioContent->unset<LoudnessMetadatas>();
-    audioContent->unset<DialogueId>();
-
-    REQUIRE(audioContent->has<AudioContentLanguage>() == false);
-    REQUIRE(audioContent->has<LoudnessMetadatas>() == false);
-    REQUIRE(audioContent->has<DialogueId>() == false);
-    REQUIRE(audioContent->has<NonDialogueContentKind>() == false);
-    REQUIRE(audioContent->has<DialogueContentKind>() == false);
-    REQUIRE(audioContent->has<MixedContentKind>() == false);
-
-    // TODO: replace with check_vector_parameter
-    audioContent->add(Label(LabelValue("ohai")));
-    REQUIRE(audioContent->has<Labels>());
-    audioContent->remove(Label(LabelValue("ohai")));
-    REQUIRE(!audioContent->has<Labels>());
-  }
   // References
   {
     auto audioContent = AudioContent::create(AudioContentName("MyContent"));
