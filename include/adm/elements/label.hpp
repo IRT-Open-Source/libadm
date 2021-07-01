@@ -43,6 +43,8 @@ namespace adm {
                                    std::forward<Parameters>(namedArgs)...);
     }
 
+    ADM_EXPORT void print(std::ostream& os) const;
+
     using detail::LabelBase::set;
     using detail::AddWrapperMethods<Label>::get;
     using detail::AddWrapperMethods<Label>::has;
