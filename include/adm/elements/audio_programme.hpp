@@ -4,6 +4,7 @@
 #include <boost/optional.hpp>
 #include <memory>
 #include <vector>
+#include "adm/elements/label.hpp"
 #include "adm/elements/time.hpp"
 #include "adm/elements/audio_content.hpp"
 #include "adm/elements/audio_programme_id.hpp"
@@ -11,6 +12,7 @@
 #include "adm/elements/loudness_metadata.hpp"
 #include "adm/elements_fwd.hpp"
 #include "adm/helper/element_range.hpp"
+#include "adm/detail/auto_base.hpp"
 #include "adm/detail/named_option_helper.hpp"
 #include "adm/detail/named_type.hpp"
 #include "adm/export.h"
@@ -46,7 +48,8 @@ namespace adm {
 
   namespace detail {
     using AudioProgrammeBase =
-        HasParameters<VectorParameter<LoudnessMetadatas>>;
+        HasParameters<VectorParameter<Labels>,
+                      VectorParameter<LoudnessMetadatas>>;
   }  // namespace detail
 
   /**
@@ -113,6 +116,10 @@ namespace adm {
      */
     template <typename Parameter>
     bool isDefault() const;
+
+    using detail::AudioProgrammeBase::add;
+    using detail::AudioProgrammeBase::remove;
+    using detail::AudioProgrammeBase::set;
 
     /// @brief AudioProgrammeId setter
     ADM_EXPORT void set(AudioProgrammeId id);
@@ -182,10 +189,6 @@ namespace adm {
 
     /// Get adm::Document this element belongs to
     ADM_EXPORT std::weak_ptr<Document> getParent() const;
-
-    using detail::AudioProgrammeBase::add;
-    using detail::AudioProgrammeBase::remove;
-    using detail::AudioProgrammeBase::set;
 
    private:
     friend class AudioProgrammeAttorney;

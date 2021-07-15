@@ -56,7 +56,8 @@ namespace adm {
       node.addOptionalAttribute<End>(programme, "end");
       node.addOptionalAttribute<MaxDuckingDepth>(programme, "maxDuckingDepth");
       node.addReferences<AudioContent, AudioContentId>(programme, "audioContentIDRef");
-      node.addOptionalMultiElement<LoudnessMetadatas>(programme, "loudnessMetadata", &formatLoudnessMetadatas);
+      node.addVectorElements<LoudnessMetadatas>(programme, "loudnessMetadata", &formatLoudnessMetadata);
+      node.addVectorElements<Labels>(programme, "audioProgrammeLabel", &formatLabel);
       // clang-format on
     }
 
@@ -79,14 +80,6 @@ namespace adm {
                                                 "dialogueLoudness");
     }
 
-    void formatLoudnessMetadatas(XmlNode &node, const std::string &name,
-                                 const LoudnessMetadatas &loudnessMetadatas) {
-      for (const auto &loudnessMetadata : loudnessMetadatas) {
-        auto loudnessMetadataNode = node.addNode(name);
-        formatLoudnessMetadata(loudnessMetadataNode, loudnessMetadata);
-      }
-    }
-
     void formatAudioContent(XmlNode &node,
                             std::shared_ptr<const AudioContent> content) {
       // clang-format off
@@ -94,10 +87,11 @@ namespace adm {
       node.addOptionalAttribute<AudioContentName>(content, "audioContentName");
       node.addOptionalAttribute<AudioContentLanguage>(content, "audioContentLanguage");
       node.addReferences<AudioObject, AudioObjectId>(content, "audioObjectIDRef");
-      node.addOptionalMultiElement<LoudnessMetadatas>(content, "loudnessMetadata", &formatLoudnessMetadatas);
+      node.addVectorElements<LoudnessMetadatas>(content, "loudnessMetadata", &formatLoudnessMetadata);
       node.addOptionalElement<NonDialogueContentKind>(content, "dialogue", &formatNonDialogueContentKind);
       node.addOptionalElement<DialogueContentKind>(content, "dialogue", &formatDialogueContentKind);
       node.addOptionalElement<MixedContentKind>(content, "dialogue", &formatMixedContentKind);
+      node.addVectorElements<Labels>(content, "audioContentLabel", &formatLabel);
       // clang-format on
     }
 
@@ -142,6 +136,10 @@ namespace adm {
         node.addElement<AudioObjectId>(element, "audioComplementaryObjectIDRef");
       }
       node.addReferences<AudioTrackUid, AudioTrackUidId>(object, "audioTrackUIDRef");
+      node.addVectorElements<Labels>(object, "audioObjectLabel", &formatLabel);
+      node.addVectorElements<AudioComplementaryObjectGroupLabels>(
+          object, "audioComplementaryObjectGroupLabel",
+          &formatAudioComplementaryObjectGroupLabel);
       // clang-format on
     }
 
@@ -169,6 +167,20 @@ namespace adm {
         maxNode.addAttribute("bound", "max");
         formatGain(maxNode, gainInteraction.get<GainInteractionMax>().get());
       }
+    }
+
+    void formatLabel(XmlNode &node, const Label &label) {
+      if (label.has<LabelValue>()) {
+        node.setValue(label.get<LabelValue>().get());
+      }
+      if (label.has<LabelLanguage>()) {
+        node.addAttribute("language", label.get<LabelLanguage>().get());
+      }
+    }
+
+    void formatAudioComplementaryObjectGroupLabel(
+        XmlNode &node, const AudioComplementaryObjectGroupLabel &label) {
+      formatLabel(node, label.get());
     }
 
     void formatPositionInteractionRange(
