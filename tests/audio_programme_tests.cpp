@@ -48,9 +48,9 @@ TEST_CASE("audio_programme parameters") {
     check_optional_param<MaxDuckingDepth>(audioProgramme, canBeSetTo(-30.0));
   }
   SECTION("Labels") {
-    Labels labels {Label{LabelValue{"ohai"}}};
+    Labels labels{Label{LabelValue{"ohai"}}};
     SECTION("get/set") {
-        check_optional_param<Labels>(audioProgramme, canBeSetTo(labels));
+      check_optional_param<Labels>(audioProgramme, canBeSetTo(labels));
     }
     check_vector_param<Labels>(audioProgramme, canBeSetTo(labels));
   }

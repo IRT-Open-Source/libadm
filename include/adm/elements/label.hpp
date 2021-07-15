@@ -44,7 +44,8 @@ namespace adm {
                                    std::forward<Parameters>(namedArgs)...);
     }
 
-    ADM_EXPORT explicit Label(std::string str) : Label(LabelValue(std::move(str))) {}
+    ADM_EXPORT explicit Label(std::string str)
+        : Label(LabelValue(std::move(str))) {}
     ADM_EXPORT explicit Label(const char* s);
 
     ADM_EXPORT void print(std::ostream& os) const;
